@@ -1,11 +1,12 @@
 class TrumpsController < ApplicationController
- before_action :find_post, only: [:show, :edit, :destroy, :update]
+before_action :find_post, only: [:show, :edit, :destroy, :update]
+before_action :authenticate_user!, only: [:new, :edit, :destroy]
+before_action :is_owner, only: [:edit, :destroy]
    def index
      @trumps = Trump.all.order("created_at DESC")
    end
 
    def show
-
    end
 
    def new
@@ -13,13 +14,13 @@ class TrumpsController < ApplicationController
    end
 
    def create
-      @trump = Trump.new(post_params)
-      if @trump.save
-        redirect_to @trump
-      else
-        render "new"
-      end
-   end
+    @trump = current_user.trumps.build(post_params)
+    if @trump.save
+      redirect_to @trump, notice: "Post was successfully created!"
+    else
+      render "new"
+    end
+  end
 
  def edit
   end
@@ -36,7 +37,7 @@ class TrumpsController < ApplicationController
 
  def destroy
    @trump.destroy
-   redirect_to  "root_path"
+   redirect_to  root_path
   end
 
    private
@@ -47,6 +48,13 @@ def find_post
 end
 
    def post_params
-     params.require(:trump).permit(:title, :body)
+     params.require(:trump).permit(:title, :body, :user_id)
    end
+
+   def is_owner
+   unless current_user == @trump.user
+     flash[:alert] = "That post doesn't belong to you!"
+     redirect_to @trump
+   end
+ end
 end
