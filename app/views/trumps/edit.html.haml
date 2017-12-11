@@ -1,0 +1,6 @@
+%h1 Edit  a post:
+= simple_form_for(@trump, html: { class: 'form-horizontal' }) do |f|
+ = f.input :title
+ = f.input :body
+ = f.button :submit
+%small= link_to "Cancel", trump_path(@trump)

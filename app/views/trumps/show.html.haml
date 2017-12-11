@@ -1,0 +1,5 @@
+%h1=  @trump.title
+%p=  @trump.body
+%small= link_to "Back", root_path
+%small= link_to "Edit", edit_trump_path
+%small= link_to "Delete", @trump, method: :delete, data: {confirm: "Are you sure?"}
